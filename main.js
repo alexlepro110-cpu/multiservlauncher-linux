@@ -1,4 +1,3 @@
-// main.js
 const { app, BrowserWindow, clipboard, shell, ipcMain } = require('electron');
 const { exec } = require('child_process');
 const path = require('path');
@@ -16,20 +15,14 @@ function createWindow() {
         },
         frame: true,
         show: false,
-        backgroundColor: '#1e3c72',
-        icon: path.join(__dirname, 'assets/icon.png')
+        backgroundColor: '#1e3c72'
     });
 
     mainWindow.loadFile('index.html');
-
+   
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
     });
-
-    // DevTools en mode développement
-    if (process.env.NODE_ENV === 'development') {
-        mainWindow.webContents.openDevTools();
-    }
 }
 
 app.whenReady().then(createWindow);
@@ -40,31 +33,27 @@ app.on('window-all-closed', () => {
     }
 });
 
-// IPC Handlers
-ipcMain.on('copy-to-clipboard', (event, text) => {
-    clipboard.writeText(text);
-    event.reply('copy-success');
+// Copier l'IP
+ipcMain.on('copy-ip', (event) => {
+    clipboard.writeText('147.185.221.17:12971');
+    event.reply('copied');
 });
 
+// Lancer Minecraft
 ipcMain.on('launch-minecraft', (event) => {
-    const command = process.platform === 'linux' ? 'minecraft-launcher' : 'minecraft';
+    clipboard.writeText('147.185.221.17:12971');
    
-    exec(command, (error, stdout, stderr) => {
+    // Essaie de lancer Minecraft
+    exec('minecraft-launcher', (error) => {
         if (error) {
-            // Si la commande directe échoue, essaie avec le protocole
-            exec('xdg-open minecraft://', (err) => {
-                if (err) {
-                    event.reply('minecraft-error', 'Minecraft non trouvé. Installe-le d\'abord.');
-                } else {
-                    event.reply('minecraft-launched');
-                }
-            });
-        } else {
-            event.reply('minecraft-launched');
+            exec('xdg-open minecraft://');
         }
     });
+    event.reply('minecraft-launched');
 });
 
-ipcMain.on('open-discord', () => {
+// Ouvrir Discord
+ipcMain.on('open-discord', (event) => {
     shell.openExternal('https://discord.gg/UACRdsmMu');
+    event.reply('discord-opened');
 }); 

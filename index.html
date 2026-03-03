@@ -1,1 +1,151 @@
-<!DOCTYPE html><html lang="fr"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Multiserv Launcher</title>    <style>        body {            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;            display: flex;            justify-content: center;            align-items: center;            min-height: 100vh;            margin: 0;            padding: 20px;        }        .card {            background: rgba(255, 255, 255, 0.95);            border-radius: 30px;            padding: 50px;            box-shadow: 0 30px 70px rgba(0,0,0,0.5);            text-align: center;            max-width: 500px;            width: 100%;            backdrop-filter: blur(10px);        }        h1 {            color: #1e3c72;            margin-bottom: 10px;            font-size: 3em;            font-weight: 800;        }        .badge {            background: #ffd700;            color: #1e3c72;            padding: 5px 15px;            border-radius: 50px;            font-weight: bold;            display: inline-block;            margin-bottom: 30px;        }        .ip-box {            background: #1e3c72;            color: white;            border-radius: 15px;            padding: 20px;            margin: 30px 0;            font-size: 1.5em;            font-family: 'Courier New', monospace;            letter-spacing: 2px;            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);        }        .btn-discord {            background: #5865F2;            color: white;            border: none;            border-radius: 15px;            padding: 18px;            width: 100%;            font-size: 1.3em;            font-weight: bold;            cursor: pointer;            margin: 15px 0;            transition: all 0.3s;            display: flex;            align-items: center;            justify-content: center;            gap: 10px;        }        .btn-discord:hover {            background: #4752c4;            transform: translateY(-3px);            box-shadow: 0 10px 20px rgba(88, 101, 242, 0.4);        }        .btn-minecraft {            background: linear-gradient(135deg, #2ecc71, #27ae60);            color: white;            border: none;            border-radius: 15px;            padding: 18px;            width: 100%;            font-size: 1.3em;            font-weight: bold;            cursor: pointer;            margin: 15px 0;            transition: all 0.3s;            display: flex;            align-items: center;            justify-content: center;            gap: 10px;        }        .btn-minecraft:hover {            background: linear-gradient(135deg, #27ae60, #229954);            transform: translateY(-3px);            box-shadow: 0 10px 20px rgba(46, 204, 113, 0.4);        }        .success-message {            background: #27ae60;            color: white;            padding: 10px;            border-radius: 10px;            margin-top: 20px;            opacity: 0;            transition: opacity 0.3s;        }        .success-message.show {            opacity: 1;        }        .footer {            margin-top: 30px;            color: #7f8c8d;            font-size: 0.9em;        }        .footer a {            color: #3498db;            text-decoration: none;        }    </style></head><body>    <div class="card">        <h1>⚡ MULTISERV</h1>        <div class="badge">🌍 SERVEUR MONDIAL</div>               <div class="ip-box" id="ipDisplay">            147.185.221.17:12971        </div>        <!-- BOUTON UNIQUE : COPIE + LANCE MINECRAFT -->        <button class="btn-minecraft" onclick="copyAndLaunchMinecraft()">            ⚡ COPIER & LANCER MINECRAFT        </button>        <button class="btn-discord" onclick="openDiscord()">            💬 REJOINDRE DISCORD        </button>        <div class="success-message" id="successMessage">            ✅ IP copiée ! Lancement de Minecraft...        </div>        <div class="footer">            <p>📱 Console ? Utilise <strong>MC Server Connector</strong></p>            <p>🐧 Linux : Minecraft doit être installé</p>        </div>    </div>    <script>        const IP = '147.185.221.17';        const PORT = '12971';        const FULL_IP = IP + ':' + PORT;        function copyAndLaunchMinecraft() {            // 1. Affiche le message de confirmation            const msg = document.getElementById('successMessage');            msg.classList.add('show');                       // 2. Copie l'IP dans le presse-papiers            navigator.clipboard.writeText(FULL_IP);                       // 3. Essaie de lancer Minecraft de plusieurs façons            setTimeout(() => {                // Méthode 1: Protocole Minecraft                window.location.href = 'minecraft://';                               // Méthode 2: Open URL (pour certains launchers)                setTimeout(() => {                    window.location.href = 'minecraft://?addExternalServer=Multiserv|' + IP + ':' + PORT;                }, 500);                               // Méthode 3: Fallback (si les autres marchent pas)                setTimeout(() => {                    msg.innerHTML = '✅ IP copiée ! Colle-la dans Minecraft (Alt+Tab)';                }, 2000);            }, 100);                       // Cache le message après 3 secondes            setTimeout(() => {                msg.classList.remove('show');                setTimeout(() => {                    msg.innerHTML = '✅ IP copiée ! Lancement de Minecraft...';                }, 300);            }, 3000);        }        function openDiscord() {            window.open('https://discord.gg/UACRdsmMu', '_blank');        }        // Pour Linux : affiche une aide spécifique        const userAgent = navigator.userAgent.toLowerCase();        if (userAgent.includes('linux')) {            console.log('🐧 Mode Linux activé');            // On peut adapter le message si besoin        }    </script></body></html> 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiserv Launcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+       
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+       
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+       
+        h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+       
+        .badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+       
+        .ip-box {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.3em;
+            color: #2d3748;
+            font-weight: bold;
+        }
+       
+        .btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+       
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+       
+        .btn-copy {
+            background: #f39c12;
+        }
+       
+        .btn-minecraft {
+            background: #27ae60;
+        }
+       
+        .btn-discord {
+            background: #5865F2;
+        }
+       
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            background: #27ae60;
+            color: white;
+            border-radius: 5px;
+            display: none;
+            font-weight: bold;
+        }
+       
+        .footer {
+            margin-top: 30px;
+            color: #718096;
+            font-size: 0.9em;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+       
+        .footer p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ MULTISERV</h1>
+        <div class="badge">🌍 SERVEUR MONDIAL</div>
+       
+        <div class="ip-box" id="ipDisplay">
+            147.185.221.17:12971
+        </div>
+
+        <button class="btn btn-copy" id="copyBtn">
+            📋 COPIER L'IP
+        </button>
+
+        <button class="btn btn-minecraft" id="minecraftBtn">
+            ⛏️ LANCER MINECRAFT
+        </button>
+
+        <button class="btn btn-discord" id="discordBtn">
+            💬 DISCORD
+        </button>
+
+        <div id="status"></div>
+
+        <div class="footer">
+            <p>📱 Console : utilise MC Server Connector</p>
+            <p>🐧 Linux : Minecraft doit être installé</p>
+            <p>🌐 IP: 147.185.221.17:12971</p>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html> 

@@ -1,0 +1,120 @@
+name: Build Multiserv Launcher
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Permet de lancer manuellement
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+   
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build AppImage
+        run: |
+          npm install -g electron-builder
+          npx electron-builder --linux AppImage
+
+      - name: Build DEB package
+        run: npx electron-builder --linux deb
+
+      - name: Build RPM package
+        run: npx electron-builder --linux rpm
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: Multiserv-AppImage
+          path: dist/*.AppImage
+
+      - name: Upload DEB
+        uses: actions/upload-artifact@v4
+        with:
+          name: Multiserv-DEB
+          path: dist/*.deb
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: Multiserv-RPM
+          path: dist/*.rpm
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm install -g electron-builder
+      - run: npx electron-builder --windows
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Multiserv-Windows
+          path: dist/*.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm install -g electron-builder
+      - run: npx electron-builder --mac
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Multiserv-Mac
+          path: dist/*.dmg
+
+  create-release:
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+   
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            Multiserv-AppImage/*.AppImage
+            Multiserv-DEB/*.deb
+            Multiserv-RPM/*.rpm
+            Multiserv-Windows/*.exe
+            Multiserv-Mac/*.dmg
+          body: |
+            ## ?? Multiserv Launcher ${{ github.ref_name }}
+           
+            ### ? Nouveaut s
+            - Interface am lior e
+            - Bouton unique copie + lancement
+            - Support Linux, Windows, Mac
+           
+            ### ?? T l chargements
+            - **Linux** : AppImage, DEB, RPM
+            - **Windows** : EXE
+            - **Mac** : DMG
+           
+            ### ?? IP du serveur
+            `147.185.221.17:12971`
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

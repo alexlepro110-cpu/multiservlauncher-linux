@@ -1,0 +1,30 @@
+{
+  "name": "multiserv-launcher",
+  "version": "1.0.0",
+  "description": "Launcher pour le serveur Multiserv",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --linux",
+    "pack": "electron-builder --dir"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.multiserv.launcher",
+    "productName": "Multiserv Launcher",
+    "directories": {
+      "output": "dist"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "rpm"
+      ],
+      "category": "Game",
+      "icon": "assets/icon.png"
+    }
+  }
+}

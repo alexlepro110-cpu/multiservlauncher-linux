@@ -1,26 +1,52 @@
 {
-  "name": "multiserv-linux-launcher",
+  "name": "multiservlauncher-linux",
   "version": "1.0.0",
-  "description": "Launcher pour le serveur Minecraft Multiserv",
+  "description": "Multi Service Launcher for Linux with Electron",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --linux"
+    "build": "electron-builder",
+    "build:linux": "electron-builder --linux",
+    "build:appimage": "electron-builder --linux AppImage",
+    "build:deb": "electron-builder --linux deb"
   },
+  "keywords": ["electron", "launcher", "linux"],
+  "author": "alexlepro110-cpu",
+  "license": "ISC",
   "devDependencies": {
-    "electron-builder": "^24.9.1"
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
   },
   "build": {
-    "appId": "com.multiserv.launcher",
-    "productName": "Multiserv Launcher",
+    "appId": "com.multiservlauncher.linux",
+    "productName": "MultiServ Launcher",
+    "files": [
+      "main.js",
+      "renderer.js",
+      "index.html",
+      "node_modules/**/*"
+    ],
     "directories": {
-      "output": "dist"
+      "buildResources": "assets"
     },
     "linux": {
-      "target": ["AppImage", "deb", "rpm"],
-      "category": "Game",
-      "maintainer": "Multiserv",
-      "description": "Lanceur officiel pour rejoindre le serveur Multiserv"
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility",
+      "icon": "assets/icon.png",
+      "artifactName": "${productName}-${version}.${ext}"
+    },
+    "deb": {
+      "depends": [
+        "gconf2",
+        "gconf-service",
+        "libappindicator1",
+        "libnotify4",
+        "libxtst6",
+        "xdg-utils"
+      ]
     }
   }
-} 
+}

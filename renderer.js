@@ -1,64 +1,46 @@
-// renderer.js
 const { ipcRenderer } = require('electron');
 
-const IP = '147.185.221.17';
-const PORT = '12971';
-const FULL_IP = `${IP}:${PORT}`;
-
-// �l�ments DOM
+// Éléments DOM
+const copyBtn = document.getElementById('copyBtn');
 const minecraftBtn = document.getElementById('minecraftBtn');
 const discordBtn = document.getElementById('discordBtn');
 const statusDiv = document.getElementById('status');
-const ipBox = document.getElementById('ipAddress');
 
-// Copie dans le presse-papiers (via le main process)
-function copyToClipboard(text) {
-    ipcRenderer.send('copy-to-clipboard', text);
-}
-
-// Affiche un message de statut
-function showStatus(message, type = 'success') {
-    statusDiv.textContent = message;
-    statusDiv.className = `status ${type}`;
-    setTimeout(() => {
-        statusDiv.textContent = '';
-        statusDiv.className = 'status';
-    }, 3000);
-}
-
-// Bouton Minecraft
-minecraftBtn.addEventListener('click', () => {
-    // Copie l'IP
-    copyToClipboard(FULL_IP);
-   
-    // Affiche le message
-    showStatus('? IP copi�e ! Lancement de Minecraft...');
-   
-    // Lance Minecraft
-    ipcRenderer.send('launch-minecraft');
+// Copier IP
+copyBtn.addEventListener('click', () => {
+    ipcRenderer.send('copy-ip');
+    showStatus('📋 IP copiée !');
 });
 
-// Bouton Discord
+// Lancer Minecraft
+minecraftBtn.addEventListener('click', () => {
+    ipcRenderer.send('launch-minecraft');
+    showStatus('⛏️ IP copiée ! Lancement de Minecraft...');
+});
+
+// Ouvrir Discord
 discordBtn.addEventListener('click', () => {
     ipcRenderer.send('open-discord');
-    showStatus('? Discord ouvert !');
+    showStatus('💬 Discord ouvert !');
 });
 
-// Animation de copie
-ipBox.addEventListener('click', () => {
-    copyToClipboard(FULL_IP);
-    showStatus('? IP copi�e !');
-});
-
-// Messages du main process
-ipcRenderer.on('copy-success', () => {
-    showStatus('? IP copi�e !');
+// Réponses
+ipcRenderer.on('copied', () => {
+    showStatus('✅ IP copiée !');
 });
 
 ipcRenderer.on('minecraft-launched', () => {
-    console.log('Minecraft lanc�');
+    // Déjà géré
 });
 
-ipcRenderer.on('minecraft-error', (event, error) => {
-    showStatus('? ' + error, 'error');
-});    
+ipcRenderer.on('discord-opened', () => {
+    // Déjà géré
+});
+
+function showStatus(message) {
+    statusDiv.textContent = message;
+    statusDiv.style.display = 'block';
+    setTimeout(() => {
+        statusDiv.style.display = 'none';
+    }, 2000);
+}    
